@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  Alert,
+} from "react-native";
 import { connect } from "react-redux";
+import { ButtonWithIcon, CategoryCard } from "../components";
+import SearchBar from "../components/SearchBar";
 import { ApplicationState, UserState } from "../redux";
 import { onAvailibility } from "../redux/Actions/ShoppingAction";
 import { ShoppingState, Restaurant } from "../redux/Models/index";
@@ -10,13 +19,18 @@ interface LandingProps {
   ShoppingReducer: ShoppingState;
   onAvailibility: Function;
 }
-const _HomePage: React.FC<LandingProps> = (props) => {
-  const { location } = props.userReducer;
-  const { Availability } = props.ShoppingReducer;
+const _HomePage: React.FC<LandingProps | any> = ({
+  userReducer,
+  ShoppingReducer,
+  onAvailibility,
+  navigation,
+}) => {
+  const { location } = userReducer;
+  const { Availability } = ShoppingReducer;
   const { categorie, foods, restaurant } = Availability;
 
   useEffect(() => {
-    props.onAvailibility(location.postalCode);
+    onAvailibility(location.postalCode);
   }, []);
   return (
     <View style={style.Container}>
@@ -26,14 +40,37 @@ const _HomePage: React.FC<LandingProps> = (props) => {
           <Text>Edit</Text>
         </View>
         <View style={style.SearchBar}>
-          <Text>SearchBar</Text>
+          <SearchBar
+            didTouch={() => {
+              navigation.navigate("searchPage");
+            }}
+            onTextChange={() => {}}
+          />
+          <ButtonWithIcon
+            onTap={() => {}}
+            icon={require("../images/hambar.png")}
+            width={50}
+            height={40}
+          />
         </View>
       </View>
       <View style={style.Main}>
-        <Text>Main</Text>
-      </View>
-      <View style={style.Footer}>
-        <Text>Footer</Text>
+        <ScrollView>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={categorie}
+            renderItem={(item) => (
+              <CategoryCard
+                item={item}
+                onTap={() => {
+                  alert("categorie Taps");
+                }}
+              />
+            )}
+            keyExtractor={(item) => `${item.id}`}
+          />
+        </ScrollView>
       </View>
     </View>
   );
@@ -50,20 +87,17 @@ export { HomePage };
 const style = StyleSheet.create({
   Header: {
     flex: 2,
-    backgroundColor: "rgba(242,242,242,1)",
   },
   Container: {
     flex: 1,
-    backgroundColor: "cyan",
+    backgroundColor: "#fff",
   },
   Main: {
-    flex: 9,
-    backgroundColor: "red",
+    flex: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  Footer: {
-    flex: 1,
-    backgroundColor: "yellow",
-  },
+
   LocationText: {
     paddingTop: 40,
     flex: 6,
@@ -75,9 +109,11 @@ const style = StyleSheet.create({
     paddingRight: 20,
   },
   SearchBar: {
-    flex: 8,
-    backgroundColor: "green",
+    display: "flex",
+    height: 60,
+    justifyContent: "space-around",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    marginLeft: 4,
   },
 });

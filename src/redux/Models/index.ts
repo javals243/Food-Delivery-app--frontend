@@ -1,5 +1,6 @@
 import { LocationGeocodedAddress as Address } from "expo-location";
 export interface Category {
+  id: string;
   title: string;
   icon: string;
 }
