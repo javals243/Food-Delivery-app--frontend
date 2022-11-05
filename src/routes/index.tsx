@@ -1,11 +1,10 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { HomePage } from "../screens/HomeScreen";
 import { LandingPage, SearchScreen } from "../screens";
 import BottomTabNav from "./BotomTabNav";
-import RestaurantScreen from "../screens/RestaurantScreen";
-import FoodDetalScreen from "../screens/FoodDetalScreen";
+import { FoodDetailScreen } from "../screens/FoodDetalScreen";
+import { RestaurantScreen } from "../screens/RestaurantScreen";
 
 const Root = createStackNavigator();
 
@@ -17,7 +16,7 @@ const Router = () => {
         <Root.Screen component={BottomTabNav} name="homeTabs" />
         <Root.Screen component={SearchScreen} name="searchPage" />
         <Root.Screen component={RestaurantScreen} name="restaurantPage" />
-        <Root.Screen component={FoodDetalScreen} name="foodDetail" />
+        <Root.Screen component={FoodDetailScreen} name="foodDetail" />
       </Root.Navigator>
     </NavigationContainer>
   );

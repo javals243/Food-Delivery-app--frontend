@@ -1,14 +1,9 @@
-import { useContext } from "react";
-import {
-  NavigationContext,
-  NavigationParams,
-  NavigationRoute,
-  NavigationScreenProp,
-} from "react-navigation";
+import { useContext } from 'react'
+import { NavigationScreenProp,NavigationRoute, NavigationContext, NavigationParams } from 'react-navigation'
 
-export function useNavigation() {
-  return useContext(NavigationContext) as NavigationScreenProp<
-    NavigationRoute,
-    NavigationParams
-  >;
+
+export function useNavigation(){
+
+    return useContext(NavigationContext) as NavigationScreenProp<NavigationRoute, NavigationParams>
+
 }

@@ -1,13 +1,18 @@
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { BASE_URL } from "../../utils";
 import { LocationGeocodedAddress as Address } from "expo-location";
 import { Dispatch } from "react";
-import { BASE_URL } from "../../utils";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FoodModel } from "../Models";
 
-export interface UpdateLocationAction {
+export interface updateLocationAction {
   readonly type: "ON_UPDATE_LOCATION";
   payload: Address;
+}
+export interface UserActionError {
+  readonly type: "ON_ERROR_USER";
+  payload: any;
 }
 
 export interface UserErrorAction {
@@ -26,31 +31,22 @@ export interface UserLoginAction {
 }
 
 export type UserAction =
-  | UpdateLocationAction
+  | updateLocationAction
   | UserErrorAction
   | UpdateCartAction
   | UserLoginAction;
 
-// User Actions trigger from Components
-
-export const onUpdateLocation = (location: Address) => {
-  return async (dispatch: Dispatch<UserAction>) => {
+export const onUpdateLocation =
+  (location: Address) => async (dispatch: Dispatch<UserAction>) => {
     try {
       const locationString = JSON.stringify(location);
-      await AsyncStorage.setItem("user_location", locationString);
-      // save our location in local storage
-      dispatch({
-        type: "ON_UPDATE_LOCATION",
-        payload: location,
-      });
+
+      await AsyncStorage.setItem("user-local", locationString);
+      dispatch({ type: "ON_UPDATE_LOCATION", payload: location });
     } catch (error) {
-      dispatch({
-        type: "ON_USER_ERROR",
-        payload: error,
-      });
+      dispatch({ type: "ON_USER_ERROR", payload: error });
     }
   };
-};
 
 export const onUpdateCart = (item: FoodModel) => {
   return async (dispatch: Dispatch<UserAction>) => {

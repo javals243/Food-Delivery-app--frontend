@@ -1,8 +1,36 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { ApplicationState } from "../redux";
-interface FoodDetailProps {}
-const FoodDetalScreen: React.FC<FoodDetailProps> = () => {
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  ImageBackground,
+  Dimensions,
+} from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+import { ButtonWithIcon, FoodCard } from "../components";
+import { ApplicationState, FoodModel, onUpdateCart, UserState } from "../redux";
+import { connect } from "react-redux";
+
+import { useNavigation, checkExistence } from "../utils";
+
+interface FoodDetailProps {
+  onUpdateCart: Function;
+  navigation: { getParam: Function; goBack: Function };
+  userReducer: UserState;
+}
+
+const _FoodDetailScreen: React.FC<FoodDetailProps> = (props) => {
+  const { getParam, goBack } = props.navigation;
+
+  const food = getParam("food") as FoodModel;
+
+  const { navigate } = useNavigation();
+
+  const { Cart } = props.userReducer;
+
   return (
     <View style={styles.container}>
       <View style={styles.navigation}>
@@ -79,5 +107,9 @@ const styles = StyleSheet.create({
 });
 
 const mapToStateProps = (state: ApplicationState) => ({
-  userReducer: state.userReducer,
+  userReducer: state.UserReducer,
 });
+
+export const FoodDetailScreen = connect(mapToStateProps, { onUpdateCart })(
+  _FoodDetailScreen
+);
