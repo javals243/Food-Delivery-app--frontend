@@ -15,6 +15,7 @@ const BottomTabNav = () => {
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
+    
         tabBarInactiveTintColor: "#ffbd7d",
         tabBarActiveTintColor: "#e47911",
       }}

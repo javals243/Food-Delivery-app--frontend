@@ -1,26 +1,25 @@
-import { FoodAvailability, ShoppingState } from "../Models/index";
-import { ShoppingAction } from "../Actions/ShoppingAction";
+import { ShoppingAction } from "../Actions";
+import { FoodAvailability, FoodModel, ShoppingState } from "../Models";
 
-export const InitialState = {
-  Availability: {} as FoodAvailability,
+const initialState = {
+  availability: {} as FoodAvailability,
+  availableFoods: {} as [FoodModel],
 };
+
 const ShoppingReducer = (
-  state: ShoppingState = InitialState,
+  state: ShoppingState = initialState,
   action: ShoppingAction
 ) => {
   switch (action.type) {
-    case "ON_AVAILIBILITY":
+    case "ON_AVAILABILITY":
       return {
         ...state,
         availability: action.payload,
       };
-    case "ON_SHOPPING_ERROR":
-      return {
-        ...state,
-        error: action.payload,
-      };
+
     default:
       return state;
   }
 };
+
 export { ShoppingReducer };

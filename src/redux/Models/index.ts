@@ -1,18 +1,25 @@
 import { LocationGeocodedAddress as Address } from "expo-location";
+
+// category
 export interface Category {
   id: string;
-  title: string;
-  icon: string;
+  title: String;
+  icon: String;
 }
+
+// Food Model
 export interface FoodModel {
   _id: string;
   name: string;
   description: string;
-  categorie: string;
+  category: string;
   price: number;
   readyTime: number;
-  image: [string];
+  images: [string];
+  unit: number;
 }
+
+//Restaurant Model
 export interface Restaurant {
   _id: string;
   name: string;
@@ -22,22 +29,32 @@ export interface Restaurant {
   images: string;
   foods: [FoodModel];
 }
+
 export interface FoodAvailability {
-  categorie: [Category];
-  restaurant: [Restaurant];
+  categories: [Category];
+  restaurants: [Restaurant];
   foods: [FoodModel];
 }
+
+//todo : Modify later
+//User Model
 export interface UserModel {
   firstName: string;
-  lastName: string;
-  contactNumber: string;
+  lastName: String;
+  contactNumber: String;
   token: string;
+  varified: boolean;
 }
+
 export interface UserState {
   user: UserModel;
   location: Address;
   error: string | undefined;
+  //orders
 }
+
 export interface ShoppingState {
-  Availability: FoodAvailability;
+  availability: FoodAvailability;
+  availableFoods: [FoodModel];
+  //other models
 }

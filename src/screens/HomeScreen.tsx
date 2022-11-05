@@ -8,30 +8,30 @@ import {
   Alert,
 } from "react-native";
 import { connect } from "react-redux";
-import { ButtonWithIcon, CategoryCard } from "../components";
+import { ButtonWithIcon, CategoryCard, RestaurantCard } from "../components";
 import SearchBar from "../components/SearchBar";
 import { ApplicationState, UserState } from "../redux";
-import { onAvailibility } from "../redux/Actions/ShoppingAction";
-import { ShoppingState, Restaurant } from "../redux/Models/index";
+import { onAvailability } from "../redux/Actions/ShoppingAction";
+import { ShoppingState, Restaurant, FoodModel } from "../redux/Models/index";
 
 interface LandingProps {
   userReducer: UserState;
   ShoppingReducer: ShoppingState;
-  onAvailibility: Function;
+  onAvailability: Function;
 }
-const _HomePage: React.FC<LandingProps | any> = ({
-  userReducer,
-  ShoppingReducer,
-  onAvailibility,
-  navigation,
-}) => {
-  const { location } = userReducer;
-  const { Availability } = ShoppingReducer;
-  const { categorie, foods, restaurant } = Availability;
-
+const _HomePage: React.FC<LandingProps | any> = (props) => {
+  const { location } = props.userReducer;
+  const { availability } = props.ShoppingReducer;
+  const { categories, foods, restaurants } = availability;
   useEffect(() => {
-    onAvailibility(location.postalCode);
+    props.onAvailability(100);
   }, []);
+  const onRestaurantTap = (item: Restaurant) => {
+    props.navigation.navigate("restaurantPage", { restaurant: item });
+  };
+  const onTapFood = (item: FoodModel) => {
+    props.navigation.navigate("foodDetail", { food: item });
+  };
   return (
     <View style={style.Container}>
       <View style={style.Header}>
@@ -42,7 +42,7 @@ const _HomePage: React.FC<LandingProps | any> = ({
         <View style={style.SearchBar}>
           <SearchBar
             didTouch={() => {
-              navigation.navigate("searchPage");
+              props.navigation.navigate("searchPage");
             }}
             onTextChange={() => {}}
           />
@@ -59,8 +59,8 @@ const _HomePage: React.FC<LandingProps | any> = ({
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={categorie}
-            renderItem={(item) => (
+            data={categories}
+            renderItem={({ item }) => (
               <CategoryCard
                 item={item}
                 onTap={() => {
@@ -70,20 +70,64 @@ const _HomePage: React.FC<LandingProps | any> = ({
             )}
             keyExtractor={(item) => `${item.id}`}
           />
+          <View>
+            <Text
+              style={{
+                color: "#f15b5d",
+                marginLeft: 20,
+                fontWeight: "600",
+                fontSize: 25,
+              }}
+            >
+              Top Restaurant
+            </Text>
+          </View>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={restaurants}
+            renderItem={({ item }) => (
+              <RestaurantCard item={item} onTap={onRestaurantTap} />
+            )}
+            keyExtractor={(item) => `${item._id}`}
+          />
+          <View>
+            <Text
+              style={{
+                color: "#f15b5d",
+                marginLeft: 20,
+                fontWeight: "600",
+                fontSize: 25,
+              }}
+            >
+              {" "}
+              30 minutes Foods
+            </Text>
+          </View>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={foods}
+            renderItem={({ item }) => (
+              <RestaurantCard item={item} onTap={onTapFood} />
+            )}
+            keyExtractor={(item) => `${item._id}`}
+          />
         </ScrollView>
       </View>
     </View>
   );
 };
-const mapStateToProps = (state: ApplicationState) => {
-  return {
-    userReducer: state.UserReducer,
-    ShoppingReducer: state.ShoppingReducer,
-  };
-};
-const HomePage = connect(mapStateToProps, { onAvailibility })(_HomePage);
+
+const mapToStateProps = (state: ApplicationState) => ({
+  userReducer: state.UserReducer,
+  ShoppingReducer: state.ShoppingReducer,
+});
+
+const HomePage = connect(mapToStateProps, { onAvailability })(_HomePage);
 
 export { HomePage };
+
 const style = StyleSheet.create({
   Header: {
     flex: 2,

@@ -1,32 +1,50 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { BASE_URL } from "../../utils";
 import { LocationGeocodedAddress as Address } from "expo-location";
 import { Dispatch } from "react";
 import { FoodAvailability } from "../Models/index";
 
+//availability Action
+
 export interface AvailabilityAction {
-  readonly type: "ON_AVAILIBILITY";
+  readonly type: "ON_AVAILABILITY";
   payload: FoodAvailability;
 }
-export interface ShoppingError {
+
+export interface ShoppingErrorAction {
   readonly type: "ON_SHOPPING_ERROR";
   payload: any;
 }
 
-export type ShoppingAction = AvailabilityAction | ShoppingError;
-export const onAvailibility =
-  (postCode: string) => async (dispatch: Dispatch<ShoppingAction>) => {
+export type ShoppingAction = AvailabilityAction | ShoppingErrorAction;
+
+//Trigger actions from components
+export const onAvailability = (postCode: any) => {
+  return async (dispatch: Dispatch<ShoppingAction>) => {
     try {
       const response = await axios.get<FoodAvailability>(
-        `${BASE_URL}Foods/availability/${postCode}`
+        `${BASE_URL}food/availability/${postCode}`
       );
 
       if (!response) {
-        dispatch({ type: "ON_SHOPPING_ERROR", payload: "Availability error" });
+        dispatch({
+          type: "ON_SHOPPING_ERROR",
+          payload: "Availability error",
+        });
+      } else {
+        // save our location in local storage
+        dispatch({
+          type: "ON_AVAILABILITY",
+          payload: response.data,
+        });
       }
-      dispatch({ type: "ON_AVAILIBILITY", payload: response.data });
     } catch (error) {
-      dispatch({ type: "ON_SHOPPING_ERROR", payload: error });
+      dispatch({
+        type: "ON_SHOPPING_ERROR",
+        payload: error,
+      });
     }
   };
+};
+
+//Trigger actions from components
